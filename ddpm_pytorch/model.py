@@ -17,5 +17,8 @@ class TimeEmbedding(nn.Module):
         self.lin2 = nn.Linear(self.n_channels, self.n_channels)        
 
     def forward(self, t: torch.Tensor):
-        
+        emb = t[:, None] * emb[None, :]
+        emb = torch.cat((emb.sin(), emb.cos()), dim=1)
+        emb = self.act(self.lin1(emb))
+        emb = self.lin2(emb)
         return emb 
