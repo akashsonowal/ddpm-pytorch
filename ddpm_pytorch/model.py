@@ -25,3 +25,32 @@ class TimeEmbedding(nn.Module):
         emb = self.act(self.lin1(emb))
         emb = self.lin2(emb)
         return emb 
+
+class ResidualBlock(nn.Module):
+    def __init__(self, in_channels: int, out_channels: int, time_channels: int, n_groups: int = 32, dropout: float = 0.1):
+        super().__init__()
+        pass 
+    
+    def forward(self, x: torch.Tensor, t: torch.Tensor):
+        pass 
+
+class AttentionBlock(nn.Module):
+    pass
+
+class DownBlock(nn.Module):
+    pass
+
+class UpBlock(nn.Module):
+    pass 
+
+class MiddleBlock(nn.Module):
+    pass 
+
+class UpSample(nn.Module):
+    pass 
+
+class DownSample(nn.Module):
+    pass 
+
+class UNet(nn.Module):
+    pass 
