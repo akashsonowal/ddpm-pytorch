@@ -58,3 +58,20 @@ class UNet(nn.Module):
         n_resolutions = len(ch_mults)
         self.image_proj = nn.Conv2d(image_channels, n_channels, kernel_size=(3, 3), padding=(1, 1))
         self.time_emb = TimeEmbedding(n_channels*4)
+
+        down = []
+
+        out_channels = in_channels = n_channels
+
+        for i in range(n_resolutions):
+            out_channels = in_channels * ch_mults[i]
+
+            for _ in range(n_blocks):
+                down.append(DownBlock(in_channels, out_channels, n_channels*4, is_attn[i]))
+                in_channels = out_channels
+            
+            if i < n_resolutions - 1:
+                down.append(DownSample(in_channels))
+        
+        self.down = nn.ModuleList(down)
+        
