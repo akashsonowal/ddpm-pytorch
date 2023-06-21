@@ -101,3 +101,23 @@ class UNet(nn.Module):
         t: (bs, )
         """
         t = self.time_emb(t)
+        x = self.image_proj(x)
+        h = [x]
+
+        for m in self.down:
+            x = m(x, t)
+            h.append(x)
+        
+        x = self.middle(x, t)
+
+        for m in self.up:
+            if isinstance(m, UpSample):
+                x = m(x, t)
+            else:
+                s = h.pop()
+                x = torch.cat((x, s), dim=1)
+                x = m(x, t)
+        
+        return self.final(self.act(self.norm(x)))
+
+
