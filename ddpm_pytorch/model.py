@@ -19,11 +19,11 @@ class TimeEmbedding(nn.Module):
     def forward(self, t: torch.Tensor):
         half_dim = self.n_channels // 8
         emb = math.log(10_000) / (half_dim - 1)
-        emb = torch.exp(torch.arange(half_dim, device=t.device) * -emb)  # [half_dim]
-        emb = t[:, None] * emb[None, :] # (bs, half_dim, n_channels)
-        emb = torch.cat((emb.sin(), emb.cos()), dim=1) # (bs, 2*half_dim. n_channels)
-        emb = self.act(self.lin1(emb))
-        emb = self.lin2(emb)
+        emb = torch.exp(torch.arange(half_dim, device=t.device) * -emb)  # (half_dim,)
+        emb = t[:, None] * emb[None, :] # (bs, half_dim)
+        emb = torch.cat((emb.sin(), emb.cos()), dim=1) # (bs, 2*half_dim)
+        emb = self.act(self.lin1(emb)) # (bs, n_channels)
+        emb = self.lin2(emb) # (bs, n_channels)
         return emb 
 
 class ResidualBlock(nn.Module):
@@ -74,4 +74,30 @@ class UNet(nn.Module):
                 down.append(DownSample(in_channels))
         
         self.down = nn.ModuleList(down)
+
+        self.middle = MiddleBlock(out_channels, n_channels * 4, )
+
+        up = []
+        in_channels = out_channels
+        for i in reversed(range(n_resolutions)):
+            out_channels = in_channels
+            for _ in range(n_blocks):
+                up.append(UpBlock(in_channels, out_channels, n_channels*4, is_attn[i]))
+            out_channels = in_channels // ch_mults[i]
+            up.append(UpBlock(in_channels, out_channels, n_channels*4, is_attn[i]))
+            in_channels = out_channels
+
+            if i > 0:
+                up.append(UpSample(in_channels))
         
+        self.up = nn.ModuleList(up)
+        self.norm = nn.GroupNorm(8, n_channels)
+        self.act = Swish()
+        self.final = nn.Conv2d(in_channels, image_channels, kernel_size=(3, 3), padding=(1, 1))
+    
+    def forward(self, x: torch.Tensor, t: torch.Tensor):
+        """
+        x: (bs, in_channels, h, w)
+        t: (bs, )
+        """
+        t = self.time_emb(t)
