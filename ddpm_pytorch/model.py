@@ -120,4 +120,3 @@ class UNet(nn.Module):
         
         return self.final(self.act(self.norm(x)))
 
-
