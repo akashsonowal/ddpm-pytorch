@@ -21,7 +21,7 @@ class TimeEmbedding(nn.Module):
         emb = math.log(10_000) / (half_dim - 1)
         emb = torch.exp(torch.arange(half_dim, device=t.device) * -emb)  # [half_dim]
         emb = t[:, None] * emb[None, :] # (bs, half_dim, n_channels)
-        emb = torch.cat((emb.sin(), emb.cos()), dim=1)
+        emb = torch.cat((emb.sin(), emb.cos()), dim=1) # (bs, 2*half_dim. n_channels)
         emb = self.act(self.lin1(emb))
         emb = self.lin2(emb)
         return emb 
@@ -53,4 +53,8 @@ class DownSample(nn.Module):
     pass 
 
 class UNet(nn.Module):
-    pass 
+    def __init__(self, image_channels: int = 3, n_channels: int = 64, ch_mults: Union[Tuple[int, ...], List[int]] = (1, 2, 3, 4),  is_attn: Union[Tuple[bool, ...], List[int]] = (False, False, True, True), n_blocks: int = 2):
+        super().__init__()
+        n_resolutions = len(ch_mults)
+        self.image_proj = nn.Conv2d(image_channels, n_channels, kernel_size=(3, 3), padding=(1, 1))
+        self.time_emb = TimeEmbedding(n_channels*4)
