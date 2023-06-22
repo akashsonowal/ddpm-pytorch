@@ -101,7 +101,18 @@ class DownBlock(nn.Module):
         return x
 
 class UpBlock(nn.Module):
-    pass 
+    def __init__(self, in_channels: int, out_channels: int, time_channels: int, has_attn: bool):
+        super().__init__()
+        self.res = ResidualBlock(in_channels + out_channels, out_channels, time_channels)
+        if has_attn:
+            self.attn = AttentionBlock(out_channels)
+        else:
+            self.attn = nn.Identity()
+    
+    def forward(self, x: torch.Tensor, t:torch.Tensor):
+        x = self.res(x, t)
+        x = self.attn(x)
+        return x
 
 class MiddleBlock(nn.Module):
     pass 
