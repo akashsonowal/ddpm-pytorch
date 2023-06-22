@@ -48,7 +48,14 @@ class ResidualBlock(nn.Module):
         self.dropout = nn.dropout(dropout)
 
     def forward(self, x: torch.Tensor, t: torch.Tensor):
-        pass 
+        """
+        x: [batch_size, in_channels, height, width]
+        t: [batch_size, time_channels]
+        """
+        h = self.conv1(self.act1(self.norm1(x)))
+        h += self.time_emb(self.time_act(t))[:, :, None, None]
+        h = self.conv2(self.dropout(self.act2(self.norm2(h))))
+        return h + self.shortcut(x)       
 
 class AttentionBlock(nn.Module):
     pass
@@ -116,7 +123,7 @@ class UNet(nn.Module):
         x: (bs, in_channels, h, w)
         t: (bs, )
         """
-        t = self.time_emb(t)
+        t = self.time_emb(t) # (bs, n_channels)
         x = self.image_proj(x)
         h = [x]
 
