@@ -29,8 +29,24 @@ class TimeEmbedding(nn.Module):
 class ResidualBlock(nn.Module):
     def __init__(self, in_channels: int, out_channels: int, time_channels: int, n_groups: int = 32, dropout: float = 0.1):
         super().__init__()
-        pass 
-    
+        self.norm1 = nn.GroupNorm(n_groups, in_channels)
+        self.act1 = Swish()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=(3, 3), padding=(1, 1))
+
+        self.norm2 = nn.GroupNorm(n_groups, out_channels)
+        self.act2 = Swish()
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=(3, 3), padding=(1, 1))
+
+        if in_channels != out_channels:
+            self.shortcut = nn.Conv2d(in_channels, out_channels, kernel_size=(3, 3), padding=(1, 1))
+        else:
+            self.shortcut = nn.Identity()
+        
+        self.time_emb = nn.Conv2d(time_channels, out_channels)
+        self.time_act = Swish()
+
+        self.dropout = nn.dropout(dropout)
+
     def forward(self, x: torch.Tensor, t: torch.Tensor):
         pass 
 
