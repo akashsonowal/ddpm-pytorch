@@ -115,7 +115,8 @@ class UpBlock(nn.Module):
         return x
 
 class MiddleBlock(nn.Module):
-    pass 
+    def __init__(self, n_channels: int, time_channels: int):
+        
 
 class UpSample(nn.Module):
     pass 
