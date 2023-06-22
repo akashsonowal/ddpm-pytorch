@@ -58,8 +58,34 @@ class ResidualBlock(nn.Module):
         return h + self.shortcut(x)       
 
 class AttentionBlock(nn.Module):
-    pass
+    def __init__(self, n_channels: int, n_heads: int = 1. d_k: int = None, n_groups: int = 32):
+        super().__init__()
 
+        if d_k is None:
+            d_k = n_channels
+        
+        self.norm = nn.GroupNorm(n_groups, n_channels)
+        self.projection = nn.Linear(n_channels, n_heads * d_k * 3)
+        self.output = nn.Linear(n_heads * d_k, n_channels)
+        self.scale = d_k ** -.5
+        self.n_heads = n_heads
+        self.d_k = d_k
+    
+    def forward(self, x: torch.Tensor, t: Optional[torch.Tensor] = None):
+        _ = t # it is not used 
+        batch_size, n_channels, height, width = x.shape
+        x = x.view(batch_size, n_channels, -1).permute(0, 2, 1)
+        qkv = self.projection(x).view(batch_size, -1, self.n_heads, 3 * d_k)
+        q, k, v = torch.chunk(qkv, 3, dim=-1)
+        attn = torch.einsum('bihd,bjhd->bijh', q, k) * self.scale
+        attn = attn.softmax(dim=2)
+        res = torch.einsum('bijh, bjhd -> bihd', attn, v)
+        res = res.view(batch_size, -1, self.n_heads * self.d_k)
+        res = self.output(res) # (batch_size, seq, n_channels)
+        res += x
+        res = res.permute(0, 2, 1).view(batch_size, n_channels, height, width)
+        return res 
+        
 class DownBlock(nn.Module):
     pass
 
