@@ -85,9 +85,20 @@ class AttentionBlock(nn.Module):
         res += x
         res = res.permute(0, 2, 1).view(batch_size, n_channels, height, width)
         return res 
-        
+
 class DownBlock(nn.Module):
-    pass
+    def __init__(self, in_channels: int, out_channels: int, time_channels: int, has_attn: bool):
+        super().__init__()
+        self.res = ResidualBlock(in_channels, out_channels, time_channels)
+        if has_attn:
+            self.attn = AttentionBlock(out_channels)
+        else:
+            self.attn = nn.Identity()
+    
+    def forward(self, x: torch.Tensor, t: torch.Tensor):
+        x = self.res(x, t)
+        x = self.attn(x)
+        return x
 
 class UpBlock(nn.Module):
     pass 
