@@ -128,10 +128,22 @@ class MiddleBlock(nn.Module):
         return x
 
 class UpSample(nn.Module):
-    pass 
+    def __init__(self, n_channels):
+        super().__init__()
+        self.conv = nn.ConvTranspose2d(n_channels, n_channels, (4, 4), (2, 2), (1, 1))
+    
+    def forward(self, x: torch.Tensor, t: torch.Tensor):
+        _ = t 
+        return self.conv(x)
 
 class DownSample(nn.Module):
-    pass 
+    def __init__(self, n_channels):
+        super().__init__()
+        self.conv = nn.Conv2d(n_channels, n_channels, (3, 3), (2, 2), (1, 1))
+    
+    def forward(self, x: torch.Tensor, t: torch.Tensor):
+        _ = t 
+        return self.conv(x)
 
 class UNet(nn.Module):
     def __init__(self, image_channels: int = 3, n_channels: int = 64, ch_mults: Union[Tuple[int, ...], List[int]] = (1, 2, 3, 4),  is_attn: Union[Tuple[bool, ...], List[int]] = (False, False, True, True), n_blocks: int = 2):
