@@ -2,6 +2,7 @@ from typing import List
 
 from torch.utils.data import Dataset
 from ddpm_pytorch.model import UNet
+from ddpm_pytorch.ddpm import DenoiseDiffusion
 
 class CelebADataset(Dataset):
     def __init__(self, image_size: int):
