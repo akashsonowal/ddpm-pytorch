@@ -59,7 +59,7 @@ def main():
 
     for epoch in tqdm(range(epochs)):
         train_one_epoch(diffusion, optimizer, data_loader, device)
-        sample(n_samples, image_channels, image_size, n_steps, device)
+        sample(n_samples, image_channels, image_size, n_steps=1000, device=device)
 
 if __name__ == "__main__":  
     main()
