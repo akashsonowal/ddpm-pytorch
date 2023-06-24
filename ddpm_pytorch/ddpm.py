@@ -31,10 +31,10 @@ class DenoiseDiffusion:
         mean, var = self.q_xt_x0(x0, t)
         return mean + (var ** 0.5) * eps
     
-    def p_sample():
+    def p_sample(self,):
         pass 
     
-    def loss():
+    def loss(self, x0: torch.Tensor, noise: Optional[torch.Tensor] = None):
         pass 
 
 
