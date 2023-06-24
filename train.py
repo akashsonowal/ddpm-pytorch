@@ -11,10 +11,6 @@ from torch.utils.data import Dataset
 from ddpm_pytorch.model import UNet
 from ddpm_pytorch.ddpm import DenoiseDiffusion
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-
-
-
 class CelebADataset(Dataset):
     def __init__(self, image_size: int):
         super().__init__()
@@ -35,6 +31,7 @@ def sample():
     pass 
 
 def main():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     for epoch in tqdm(range(epochs)):
         train_one_epoch()
         sample()
