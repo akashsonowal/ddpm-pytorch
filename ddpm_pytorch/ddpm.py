@@ -35,6 +35,12 @@ class DenoiseDiffusion:
         pass 
     
     def loss(self, x0: torch.Tensor, noise: Optional[torch.Tensor] = None):
+        batch_size = x0.shape[0]
+        t = torch.randint(0, self.n_steps, (batch_size,), device=x0.device, dtype=torch.long)
+
+        if noise is None:
+            noise = torch.randn_like(x0)
+        
         pass 
 
 
