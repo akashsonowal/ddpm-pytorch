@@ -36,6 +36,10 @@ class MNISTDataset(torchvision.datasets.MNIST):
             torchvision.transforms.Resize(image_size),
             torchvision.transforms.ToTensor(),
         ])
+        super().__init__(self, "./data", train=True, download=True, transform=transform)
+    
+    def __getitem__(self, item):
+        return super().__getitem__(item)[0]
 
 def train_one_epoch(diffusion, optimizer, data_loader, device):
     for data in tqdm(data_loader):
