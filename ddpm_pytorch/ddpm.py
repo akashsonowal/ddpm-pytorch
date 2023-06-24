@@ -51,6 +51,3 @@ class DenoiseDiffusion:
         xt = self.q_sample(x0, t, eps=noise)
         eps_theta = self.eps_model(xt, t)
         return F.mse_loss(noise, eps_theta)
-
-
-
