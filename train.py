@@ -30,6 +30,13 @@ class CelebADataset(Dataset):
         img = Image.open(self._files[index])
         return self._transform(img)
 
+class MNISTDataset(torchvision.datasets.MNIST):
+    def __init__(self, image_size):
+        transform = torchvision.transforms.Compose([
+            torchvision.transforms.Resize(image_size),
+            torchvision.transforms.ToTensor(),
+        ])
+
 def train_one_epoch(diffusion, optimizer, data_loader, device):
     for data in tqdm(data_loader):
         data = data.to(device)
