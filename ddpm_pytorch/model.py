@@ -58,7 +58,7 @@ class ResidualBlock(nn.Module):
         return h + self.shortcut(x)       
 
 class AttentionBlock(nn.Module):
-    def __init__(self, n_channels: int, n_heads: int = 1. d_k: int = None, n_groups: int = 32):
+    def __init__(self, n_channels: int, n_heads: int = 1, d_k: int = None, n_groups: int = 32):
         super().__init__()
 
         if d_k is None:
