@@ -39,7 +39,12 @@ def train_one_epoch(diffusion, optimizer, data_loader, device):
         optimizer.step()
 
 def sample():
-    pass 
+    with torch.no_grad():
+        x = torch.randn([n_samples, image_channels, image_size, image_size], device)
+
+        for t_ in range(n_steps):
+            t = n_steps - t_- 1
+            x = diffusion.p_sample(x, x.new_full((n_samples,), t, dtype=torch.long))
 
 
 def main():
@@ -55,7 +60,6 @@ def main():
     for epoch in tqdm(range(epochs)):
         train_one_epoch(diffusion, optimizer, data_loader, device)
         sample()
-
 
 if __name__ == "__main__":  
     main()
