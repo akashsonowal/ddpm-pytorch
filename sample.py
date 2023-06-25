@@ -19,6 +19,13 @@ class Sampler:
         self.beta_tilde = self.beta * (1 - alpha_bar_tm1) / (1 - self.alpha_bar)
         self.mu_tilde_coef2 = (self.alpha ** 0.5) * (1 - alpha_bar_tm1) / (1 - self.alpha_bar)
         self.sigma2 = self.beta 
+    
+    def show_image(self, img, title=""):
+        img = img.clip(0, 1)
+        img = img.cpu().numpy()
+        plt.imshow(img.transpose(1, 2, 0))
+        plt.title(title)
+        plt.show()
 
     def sample(self, ):
         pass 
