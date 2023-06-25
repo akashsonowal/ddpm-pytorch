@@ -91,11 +91,20 @@ class Sampler:
         if create_video:
             self.make_video(frames)
 
-    def _sample_x0():
-        pass
+    def _sample_x0(self, xt: torch.Tensor, n_steps: int):
+        n_samples = xt.shape[0]
 
-    def sample(self):
-        pass 
+        for t_ in range(n_steps):
+            t = n_steps - t_ - 1
+            xt = self.diffusion.p_sample(xt, xt.new_full((n_samples,), t, dtype=torch.long))
+        return xt
+
+    def sample(self, n_samples: int = 16):
+        xt = torch.randn([n_samples, self.image_channels, self.image_size, self.image_size], device=self.device)
+        x0 = self._sample_x0(xt, self.n_steps)
+
+        for i in range(n_samples):
+            self.show_image(x0[i])
     
     def p_sample(self):
         pass
