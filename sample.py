@@ -50,7 +50,13 @@ class Sampler:
             eps_theta = self.eps_model(xt, t)
 
             if t_ % interval == 0:
-                x0 = self.p_x0()
+                x0 = self.p_x0(xt, t, eps_theta)
+                frames.append(x0[0])
+
+                if not create_video:
+                    self.show_image(x0[0], f"{t_}")
+            
+            xt = sel.p_sample(xt, t, eps_theta)
 
         if create_video:
             self.make_video(frames)
