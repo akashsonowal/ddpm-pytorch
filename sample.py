@@ -61,8 +61,11 @@ class Sampler:
         if create_video:
             self.make_video(frames)
     
-    def interpolate():
-        pass
+    def interpolate(self, x1: torch.Tensor, x2: torch.Tensor, lambda_: float, t_: int = 100):
+        n_samples = x1.shape[0]
+        t = torch.full((n_samples,), t_, device=self.device)
+        xt = (1 - lambda_) * self.diffusion.q_sample(x1, t) + lambda_ * self.diffusion.q_sample(x2, t)
+        return self._sample_x0(xt, t_)
 
     def interpolate_animate():
         pass
