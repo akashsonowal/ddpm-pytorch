@@ -26,6 +26,19 @@ class Sampler:
         plt.imshow(img.transpose(1, 2, 0))
         plt.title(title)
         plt.show()
+    
+    def make_video(self, frames, path="video.mp4"):
+        import imageio
+        writer = imageio.get_writer(path, fps=len(frames) // 20)
+
+        for f in frames:
+            f = f.clip(0, 1)
+            f = to_pil_image(resize(f, [368, 368]))
+            writer.append_data(np.array(f))
+
+        writer.close()
+    
+    def sample_animation()
 
     def sample(self, ):
         pass 
