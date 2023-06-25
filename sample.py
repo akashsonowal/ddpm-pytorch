@@ -38,9 +38,19 @@ class Sampler:
 
         writer.close()
     
-    def sample_animation()
+    def sample_animation():
+        pass 
+    
+    def interpolate():
+        pass
 
-    def sample(self, ):
+    def interpolate_animate():
+        pass
+
+    def _sample_x0():
+        pass
+
+    def sample(self):
         pass 
 
 def main():
