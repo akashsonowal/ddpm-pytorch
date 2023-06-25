@@ -106,8 +106,14 @@ class Sampler:
         for i in range(n_samples):
             self.show_image(x0[i])
     
-    def p_sample(self):
-        pass
+    def p_sample(self, xt: torch.Tensor, t: torch.Tensor, eps_theta: torch.Tensor):
+        alpha_bar = gather(self.alpha_bar, t)
+        alpha = gather(self.alpha, t)
+        eps_coef = (1 - alpha) / (1 - alpha_bar) ** .5
+        mean = 1 / (alpha ** .5) * (xt - eps_coef * eps_theta)
+        var = gather(self.sigma2, t)
+        eps = torch.randn(xt.shape, device=xt.device)
+        return mean + (var ** .5) * eps
 
     def p_x0(self):
         pass
