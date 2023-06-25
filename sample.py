@@ -67,8 +67,29 @@ class Sampler:
         xt = (1 - lambda_) * self.diffusion.q_sample(x1, t) + lambda_ * self.diffusion.q_sample(x2, t)
         return self._sample_x0(xt, t_)
 
-    def interpolate_animate():
-        pass
+    def interpolate_animate(self, x1: torch.Tensor, x2: torch.Tensor, n_frames: int = 100, t_: int = 10, create_video: bool = True):
+        self.show_image(x1, "x1")
+        self.show_image(x2, "x2")
+
+        x1 = x1[None, :, :, :]
+        x2 = x2[None, :, :, :]
+
+        t = torch.full((1,), t_, device=self.device)
+        x1t = self.diffusion.q_sample(x1, t)
+        x2t = self.diffusion.q_sample(x2, t)
+
+        frames = []
+        for i in range(n_frames + 1):
+            lambda_ = i / n_frames
+            xt = (1 - lambda_) * x1t + lambda_ * x2t
+            x0 = self._sample_x0(xt, t_)
+            frames.append(x0[0])
+
+            if not create_video:
+                self.show_image(x0[0], f"{lambda_ :.2f}")
+        
+        if create_video:
+            self.make_video(frames)
 
     def _sample_x0():
         pass
