@@ -12,6 +12,7 @@ class Sampler:
         self.image_channels = image_channels
         self.diffusion = diffusion
         self.n_steps = diffusion.n_steps
+        self.eps_model = diffusion.eps_model
         self.beta = diffusion.beta
         self.alpha = diffusion.alpha
         self.alpha_bar = diffusion.alpha_bar
@@ -39,6 +40,17 @@ class Sampler:
         writer.close()
     
     def sample_animation(self, n_frames: int = 1000, create_video: bool = True):
+        xt = torch.randn([1, self.image_channels, self.image_size, self.image_size], device=self.device)
+        interval = self.n_steps // n_frames
+        frames = []
+
+        for t_inv in range(self.n_steps):
+            t_ = self.n_steps - t_inv - 1
+            t = xt.new_full((1,), t_, dtype=torch.long)
+            eps_theta = self.eps_model(xt, t)
+
+            if t_ % interval == 0:
+                x0 = self.p_x0()
 
         if create_video:
             self.make_video(frames)
@@ -54,6 +66,12 @@ class Sampler:
 
     def sample(self):
         pass 
+    
+    def p_sample(self):
+        pass
+
+    def p_x0(self):
+        pass
 
 def main():
     diffusion_model = torch.load("./checkpoints/")
