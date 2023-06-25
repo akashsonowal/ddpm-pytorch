@@ -115,8 +115,9 @@ class Sampler:
         eps = torch.randn(xt.shape, device=xt.device)
         return mean + (var ** .5) * eps
 
-    def p_x0(self):
-        pass
+    def p_x0(self, xt: torch.Tensor, t: torch.Tensor, eps: torch.Tensor):
+        alpha_bar = gather(self.alpha_bar, t)
+        return (xt - (1 - alpha_bar)**.5 * eps) / (alpha_bar ** .5)
 
 def main():
     diffusion_model = torch.load("./checkpoints/")
