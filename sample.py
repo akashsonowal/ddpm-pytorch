@@ -38,8 +38,10 @@ class Sampler:
 
         writer.close()
     
-    def sample_animation():
-        pass 
+    def sample_animation(self, n_frames: int = 1000, create_video: bool = True):
+
+        if create_video:
+            self.make_video(frames)
     
     def interpolate():
         pass
