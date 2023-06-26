@@ -36,7 +36,7 @@ class MNISTDataset(torchvision.datasets.MNIST):
             torchvision.transforms.Resize(image_size),
             torchvision.transforms.ToTensor(),
         ])
-        super().__init__(self, "./data", train=True, download=True, transform=transform)
+        super().__init__(root='./data', train=True, download=True, transform=transform)
     
     def __getitem__(self, item):
         return super().__getitem__(item)[0]
