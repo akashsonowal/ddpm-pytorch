@@ -10,36 +10,27 @@ from PIL import Image
 from pathlib import Path
 
 from torch.utils.data import Dataset
+
+from ddpm_pytorch.data import MNISTDataset
 from ddpm_pytorch.model import UNet
 from ddpm_pytorch.ddpm import DenoiseDiffusion
 
-class CelebADataset(Dataset):
-    def __init__(self, image_size: int):
-        super().__init__()
-        folder = Path("./data") / "celebA"
-        self._files = [p for p in folder.glob(f"**/*.jpg")]
-        self._transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize(image_size),
-            torchvision.transforms.ToTensor(),
-        ])
+# class CelebADataset(Dataset):
+#     def __init__(self, image_size: int):
+#         super().__init__()
+#         folder = Path("./data") / "celebA"
+#         self._files = [p for p in folder.glob(f"**/*.jpg")]
+#         self._transform = torchvision.transforms.Compose([
+#             torchvision.transforms.Resize(image_size),
+#             torchvision.transforms.ToTensor(),
+#         ])
     
-    def __len__(self):
-        return len(self._files)
+#     def __len__(self):
+#         return len(self._files)
     
-    def __getitem__(self, index: int):
-        img = Image.open(self._files[index])
-        return self._transform(img)
-
-class MNISTDataset(torchvision.datasets.MNIST):
-    def __init__(self, image_size):
-        transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize(image_size),
-            torchvision.transforms.ToTensor(),
-        ])
-        super().__init__(root='./data', train=True, download=True, transform=transform)
-    
-    def __getitem__(self, item):
-        return super().__getitem__(item)[0]
+#     def __getitem__(self, index: int):
+#         img = Image.open(self._files[index])
+#         return self._transform(img)
 
 def train_one_epoch(diffusion, optimizer, data_loader, device):
     for data in tqdm(data_loader):
