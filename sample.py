@@ -132,7 +132,7 @@ def main():
     with torch.no_grad():
         sampler.sample_animation()
 
-        if False:
+        if True:
             device = "cuda" if torch.cuda.is_available() else "cpu"
             dataset = MNISTDataset(image_size=32)
             data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
