@@ -11,9 +11,7 @@ from pathlib import Path
 
 from torch.utils.data import Dataset
 
-from ddpm_pytorch.data import MNISTDataset
-from ddpm_pytorch.model import UNet
-from ddpm_pytorch.ddpm import DenoiseDiffusion
+from ddpm_pytorch import MNISTDataset, UNet, DenoiseDiffusion
 
 def train_one_epoch(diffusion, optimizer, data_loader, device):
     for data in tqdm(data_loader):
