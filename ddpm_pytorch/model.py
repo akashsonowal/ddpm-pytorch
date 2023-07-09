@@ -75,7 +75,7 @@ class AttentionBlock(nn.Module):
         _ = t # it is not used 
         batch_size, n_channels, height, width = x.shape
         x = x.view(batch_size, n_channels, -1).permute(0, 2, 1)
-        qkv = self.projection(x).view(batch_size, -1, self.n_heads, 3 * d_k)
+        qkv = self.projection(x).view(batch_size, -1, self.n_heads, 3 * self.d_k)
         q, k, v = torch.chunk(qkv, 3, dim=-1)
         attn = torch.einsum('bihd,bjhd->bijh', q, k) * self.scale
         attn = attn.softmax(dim=2)
