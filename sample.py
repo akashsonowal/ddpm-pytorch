@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from torchvision.transforms.functional import to_pil_image, resize 
 from ddpm_pytorch.ddpm import DenoiseDiffusion
 from ddpm_pytorch.utils import gather
+from ddpm_pytorch import MNISTDataset
 
 class Sampler:
     def __init__(self, diffusion: DenoiseDiffusion, image_channels: int, image_size: int, device: torch.device):
