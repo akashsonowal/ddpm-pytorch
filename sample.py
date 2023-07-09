@@ -10,7 +10,7 @@ class Sampler:
         self.device = device
         self.image_size = image_size
         self.image_channels = image_channels
-        self.diffusion = diffusion
+        self.diffusion = diffusion.to(device)
         self.n_steps = diffusion.n_steps
         self.eps_model = diffusion.eps_model
         self.beta = diffusion.beta
@@ -121,7 +121,7 @@ class Sampler:
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    diffusion_model = torch.load("ddpm_model.pth").to(device)
+    diffusion_model = torch.load("ddpm_model.pth")
     sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
