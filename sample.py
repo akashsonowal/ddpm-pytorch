@@ -136,6 +136,7 @@ def main():
 
         if True:
             os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+            os.environ['TORCH_USE_CUDA_DSA'] = '1'
             device = "cuda" if torch.cuda.is_available() else "cpu"
             dataset = MNISTDataset(image_size=32)
             data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
