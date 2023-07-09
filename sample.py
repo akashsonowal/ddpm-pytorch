@@ -120,8 +120,8 @@ class Sampler:
         return (xt - (1 - alpha_bar) ** .5 * eps) / (alpha_bar ** .5)
 
 def main():
-    diffusion_model = torch.load("model.pth")
-    sampler = Sampler(diffusion_model, image_channels=3, image_size=32, device=device)
+    diffusion_model = torch.load("ddpm_model.pth")
+    sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
         sampler.sample_animation()
