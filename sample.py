@@ -10,7 +10,7 @@ class Sampler:
         self.device = device
         self.image_size = image_size
         self.image_channels = image_channels
-        self.diffusion = diffusion.to(device)
+        self.diffusion = diffusion
         self.n_steps = diffusion.n_steps
         self.eps_model = diffusion.eps_model
         self.beta = diffusion.beta
