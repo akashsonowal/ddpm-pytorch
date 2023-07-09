@@ -31,7 +31,7 @@ def sample(diffusion, n_samples, image_channels, image_size, n_steps, device):
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    dataset = CelebADataset(image_size=32)
+    dataset = MNISTDataset(image_size=32)
     data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
 
     eps_model = UNet(image_channels=3, n_channels=64, ch_mults=[1, 2, 2, 4], is_attn=[False, False, False, True]).to(device)
