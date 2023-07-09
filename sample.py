@@ -120,7 +120,8 @@ class Sampler:
         return (xt - (1 - alpha_bar) ** .5 * eps) / (alpha_bar ** .5)
 
 def main():
-    diffusion_model = torch.load("ddpm_model.pth")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    diffusion_model = torch.load("ddpm_model.pth").to(device)
     sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
