@@ -42,7 +42,7 @@ class ResidualBlock(nn.Module):
         else:
             self.shortcut = nn.Identity()
         
-        self.time_emb = nn.Conv2d(time_channels, out_channels)
+        self.time_emb = nn.Linear(time_channels, out_channels)
         self.time_act = Swish()
 
         self.dropout = nn.dropout(dropout)
