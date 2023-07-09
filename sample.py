@@ -142,6 +142,8 @@ def main():
             data = next(iter(data_loader)).to(device)
 
             print(data[0].shape, data[1].shape)
+
+            return data, sampler, device
             # sampler.interpolate_animate(data[0], data[1])
 
 if __name__ == "__main__":
