@@ -125,11 +125,12 @@ def main():
     sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
-        sampler.sample_animation()
+        sampler.sample(2)
+    #     sampler.sample_animation()
 
-        if False:
-            data = next(iter(data_loader)).to(device)
-            sampler.interpolate_animate(data[0], data[1])
+    #     if False:
+    #         data = next(iter(data_loader)).to(device)
+    #         sampler.interpolate_animate(data[0], data[1])
 
 if __name__ == "__main__":
     main()
