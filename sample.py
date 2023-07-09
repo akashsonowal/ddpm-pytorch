@@ -135,8 +135,6 @@ def main():
         # sampler.sample_animation()
 
         if True:
-            # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-            os.environ['TORCH_USE_CUDA_DSA'] = '1'
             dataset = MNISTDataset(image_size=32)
             data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
             data = next(iter(data_loader)).to(device)
