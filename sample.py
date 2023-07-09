@@ -41,7 +41,7 @@ class Sampler:
     
     def sample_animation(self, n_frames: int = 1000, create_video: bool = True):
         xt = torch.randn([1, self.image_channels, self.image_size, self.image_size], device=self.device)
-        interval = self.n_steps // n_frames
+        interval = self.n_steps // n_frames # 1000 // 1000 = 1
         frames = []
 
         for t_inv in range(self.n_steps):
@@ -56,7 +56,7 @@ class Sampler:
                 if not create_video:
                     self.show_image(x0[0], f"{t_}")
             
-            xt = sel.p_sample(xt, t, eps_theta)
+            xt = self.p_sample(xt, t, eps_theta)
 
         if create_video:
             self.make_video(frames)
@@ -125,8 +125,7 @@ def main():
     sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
-        sampler.sample(2)
-    #     sampler.sample_animation()
+        sampler.sample_animation()
 
     #     if False:
     #         data = next(iter(data_loader)).to(device)
