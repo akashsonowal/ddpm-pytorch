@@ -140,7 +140,9 @@ def main():
             dataset = MNISTDataset(image_size=32)
             data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
             data = next(iter(data_loader)).to(device)
-            sampler.interpolate_animate(data[0], data[1])
+
+            print(data[0].shape, data[1].shape)
+            # sampler.interpolate_animate(data[0], data[1])
 
 if __name__ == "__main__":
     main()
