@@ -121,7 +121,7 @@ class Sampler:
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    diffusion_model = torch.load("ddpm_model.pth")
+    diffusion_model = torch.load("ddpm_model.pth", map_location=device)
     sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
