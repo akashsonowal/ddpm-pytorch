@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch 
 from matplotlib import pyplot as plt
@@ -134,6 +135,7 @@ def main():
         sampler.sample_animation()
 
         if True:
+            os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
             device = "cuda" if torch.cuda.is_available() else "cpu"
             dataset = MNISTDataset(image_size=32)
             data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
