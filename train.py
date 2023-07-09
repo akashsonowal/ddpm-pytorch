@@ -34,7 +34,7 @@ def main():
     dataset = MNISTDataset(image_size=32)
     data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
 
-    eps_model = UNet(image_channels=3, n_channels=64, ch_mults=[1, 2, 2, 4], is_attn=[False, False, False, True]).to(device)
+    eps_model = UNet(image_channels=1, n_channels=64, ch_mults=[1, 2, 2, 4], is_attn=[False, False, False, True]).to(device)
     diffusion = DenoiseDiffusion(eps_model, n_steps=1000, device=device)
 
     optimizer = torch.optim.Adam(eps_model.parameters(), lr=2e-5)
