@@ -45,7 +45,7 @@ class ResidualBlock(nn.Module):
         self.time_emb = nn.Linear(time_channels, out_channels)
         self.time_act = Swish()
 
-        self.dropout = nn.dropout(dropout)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x: torch.Tensor, t: torch.Tensor):
         """
