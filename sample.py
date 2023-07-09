@@ -41,8 +41,12 @@ class Sampler:
     
     def sample_animation(self, n_frames: int = 1000, create_video: bool = True):
         xt = torch.randn([1, self.image_channels, self.image_size, self.image_size], device=self.device)
-        # interval = self.n_steps // n_frames # 1000 // 1000 = 1
-        interval = 1
+        
+        if self.n_steps == n_frames:
+            interval = self.n_steps // n_frames # 1000 // 1000 = 1
+        else:
+            interval = 1
+            
         frames = []
 
         for t_inv in range(self.n_steps):
