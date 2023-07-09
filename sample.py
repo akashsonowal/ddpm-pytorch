@@ -46,7 +46,7 @@ class Sampler:
             interval = self.n_steps // n_frames # 1000 // 1000 = 1
         else:
             interval = 1
-            
+
         frames = []
 
         for t_inv in range(self.n_steps):
@@ -132,9 +132,12 @@ def main():
     with torch.no_grad():
         sampler.sample_animation()
 
-    #     if False:
-    #         data = next(iter(data_loader)).to(device)
-    #         sampler.interpolate_animate(data[0], data[1])
+        if False:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            dataset = MNISTDataset(image_size=32)
+            data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
+            data = next(iter(data_loader)).to(device)
+            sampler.interpolate_animate(data[0], data[1])
 
 if __name__ == "__main__":
     main()
