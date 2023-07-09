@@ -38,7 +38,7 @@ def main():
     diffusion = DenoiseDiffusion(eps_model, n_steps=1000, device=device)
 
     optimizer = torch.optim.Adam(eps_model.parameters(), lr=2e-5)
-    epochs = 10 # 1000
+    epochs = 1 # 1000
 
     for epoch in tqdm(range(epochs)):
         train_one_epoch(diffusion, optimizer, data_loader, device)
