@@ -15,7 +15,7 @@ class DenoiseDiffusion:
     def __init__(self, eps_model: nn.Module, n_steps: int, device: torch.device):
         super().__init__()
         self.eps_model = eps_model
-        self.beta = torch.linspace(0.001, 0.2, n_steps).to(device)
+        self.beta = torch.linspace(0.001, 0.2, n_steps).to(device) # linear schedule
         self.alpha = 1.0 - self.beta
         self.alpha_bar = torch.cumprod(self.alpha, dim=0)
         self.n_steps = n_steps
