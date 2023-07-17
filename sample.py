@@ -84,7 +84,7 @@ class Sampler:
         n_samples = x1.shape[0]
         t = torch.full((n_samples,), t_, device=self.device)
         xt = (1 - lambda_) * self.diffusion.q_sample(x1, t) + lambda_ * self.diffusion.q_sample(x2, t)
-        return self._sample_x0(xt, t_)
+        return self._sample_x0(xt, t_, n_steps=1000)
 
     def interpolate_animate(self, x1: torch.Tensor, x2: torch.Tensor, n_frames: int = 100, t_: int = 10, create_video: bool = True):
         self.show_image(x1, "x1")
