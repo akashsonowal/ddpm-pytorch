@@ -6,6 +6,16 @@ from torchvision.transforms.functional import to_pil_image, resize
 from ddpm_pytorch.ddpm import gather, DenoiseDiffusion 
 from ddpm_pytorch import MNISTDataset
 
+
+# def sample(diffusion, n_samples, image_channels, image_size, n_steps, device):
+#     with torch.no_grad():
+#         x = torch.randn([n_samples, image_channels, image_size, image_size], device=device)
+
+#         for t_ in range(n_steps):
+#             t = n_steps - t_- 1
+#             x = diffusion.p_sample(x, x.new_full((n_samples,), t, dtype=torch.long)) # n_samples is batch size
+# sample(diffusion, n_samples=16, image_channels=1, image_size=32, n_steps=10, device=device)
+
 class Sampler:
     def __init__(self, diffusion: DenoiseDiffusion, image_channels: int, image_size: int, device: torch.device):
         self.device = device
