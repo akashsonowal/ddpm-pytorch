@@ -3,8 +3,7 @@ import numpy as np
 import torch 
 from matplotlib import pyplot as plt
 from torchvision.transforms.functional import to_pil_image, resize 
-from ddpm_pytorch.ddpm import DenoiseDiffusion
-from ddpm_pytorch.utils import gather
+from ddpm_pytorch.ddpm import gather, DenoiseDiffusion 
 from ddpm_pytorch import MNISTDataset
 
 class Sampler:
@@ -37,10 +36,23 @@ class Sampler:
     
     def show_image(self, img, title=""):
         img = img.clip(0, 1)
-        img = img.cpu().numpy()
+        img = img.detach().cpu().numpy()
         plt.imshow(img.transpose(1, 2, 0))
         plt.title(title)
         plt.show()
+    
+    def p_x0(self, xt: torch.Tensor, t: torch.Tensor, eps: torch.Tensor):
+        alpha_bar = gather(self.alpha_bar, t)
+        return (xt - (1 - alpha_bar) ** .5 * eps) / (alpha_bar ** .5)
+    
+    def p_sample(self, xt: torch.Tensor, t: torch.Tensor, eps_theta: torch.Tensor):
+        alpha_bar = gather(self.alpha_bar, t)
+        alpha = gather(self.alpha, t)
+        eps_coef = (1 - alpha) / (1 - alpha_bar) ** .5
+        mean = 1 / (alpha ** .5) * (xt - eps_coef * eps_theta)
+        var = gather(self.sigma2, t)
+        eps = torch.randn(xt.shape, device=xt.device)
+        return mean + (var ** .5) * eps
     
     def make_video(self, frames, path="video.mp4"):
         import imageio
@@ -53,8 +65,8 @@ class Sampler:
 
         writer.close()
     
-    def sample_animation(self, n_frames: int = 1000, create_video: bool = True):
-        xt = torch.randn([1, self.image_channels, self.image_size, self.image_size], device=self.device)
+    def sample_animation(self, n_samples: int = 1, n_frames: int = 1000, create_video: bool = True):
+        xt = torch.randn([n_samples, self.image_channels, self.image_size, self.image_size], device=self.device)
         
         if self.n_steps == n_frames:
             interval = self.n_steps // n_frames # 1000 // 1000 = 1
@@ -65,7 +77,7 @@ class Sampler:
 
         for t_inv in range(self.n_steps):
             t_ = self.n_steps - t_inv - 1
-            t = xt.new_full((1,), t_, dtype=torch.long)
+            t = xt.new_full((n_samples,), t_, dtype=torch.long)
             eps_theta = self.eps_model(xt, t)
 
             if t_ % interval == 0:
@@ -109,22 +121,6 @@ class Sampler:
         
         if create_video:
             self.make_video(frames)
-
-
-    
-    
-    def p_sample(self, xt: torch.Tensor, t: torch.Tensor, eps_theta: torch.Tensor):
-        alpha_bar = gather(self.alpha_bar, t)
-        alpha = gather(self.alpha, t)
-        eps_coef = (1 - alpha) / (1 - alpha_bar) ** .5
-        mean = 1 / (alpha ** .5) * (xt - eps_coef * eps_theta)
-        var = gather(self.sigma2, t)
-        eps = torch.randn(xt.shape, device=xt.device)
-        return mean + (var ** .5) * eps
-
-    def p_x0(self, xt: torch.Tensor, t: torch.Tensor, eps: torch.Tensor):
-        alpha_bar = gather(self.alpha_bar, t)
-        return (xt - (1 - alpha_bar) ** .5 * eps) / (alpha_bar ** .5)
 
 def main(animate=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
