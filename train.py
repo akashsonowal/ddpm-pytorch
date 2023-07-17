@@ -27,7 +27,7 @@ def sample(diffusion, n_samples, image_channels, image_size, n_steps, device):
 
         for t_ in range(n_steps):
             t = n_steps - t_- 1
-            x = diffusion.p_sample(x, x.new_full((n_samples,), t, dtype=torch.long))
+            x = diffusion.p_sample(x, x.new_full((n_samples,), t, dtype=torch.long)) # n_samples is batch size
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -41,7 +41,7 @@ def main():
     epochs = 1 # 1000
 
     for epoch in tqdm(range(epochs)):
-        # train_one_epoch(diffusion, optimizer, data_loader, device)
+        train_one_epoch(diffusion, optimizer, data_loader, device)
         sample(diffusion, n_samples=16, image_channels=1, image_size=32, n_steps=10, device=device)
         
     torch.save(diffusion, "ddpm_model.pth")

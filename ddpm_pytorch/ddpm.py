@@ -56,7 +56,7 @@ class DenoiseDiffusion:
             self.n_steps,
             (batch_size,),
             device=x0.device,
-            dtype=torch.long,  # samples randomly time stamps for the batch
+            dtype=torch.long,  # samples randomly time stamps for the batch with each time between 0 to n_steps
         )
 
         if noise is None:

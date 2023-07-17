@@ -132,6 +132,13 @@ def main():
     sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
 
     with torch.no_grad():
+        if sample_type == "image":
+            pass
+        elif sample_type == "animation":
+            pass 
+        elif sample_type == "interpolate":
+            pass 
+            
         # sampler.sample_animation()
 
         if True:
