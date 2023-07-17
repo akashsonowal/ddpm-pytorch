@@ -18,9 +18,6 @@ class Sampler:
         self.beta = diffusion.beta
         self.alpha = diffusion.alpha
         self.alpha_bar = diffusion.alpha_bar
-        alpha_bar_tm1 = torch.cat([self.alpha_bar.new_ones((1,)), self.alpha_bar[:-1]])
-        self.beta_tilde = self.beta * (1 - alpha_bar_tm1) / (1 - self.alpha_bar)
-        self.mu_tilde_coef2 = (self.alpha ** 0.5) * (1 - alpha_bar_tm1) / (1 - self.alpha_bar)
         self.sigma2 = self.beta 
     
     def show_image(self, img, title=""):
@@ -68,7 +65,7 @@ class Sampler:
         if create_video:
             self.make_video(frames)
     
-    def interpolate(self, x1: torch.Tensor, x2: torch.Tensor, lambda_: float = 0.01, t_: int = 100):
+    def interpolate(self, x1: torch.Tensor, x2: torch.Tensor, lambda_: float = 0.01, t_: int = 100): #t_ is the final noised time stamp
         n_samples = x1.shape[0]
         t = torch.full((n_samples,), t_, device=self.device)
         xt = (1 - lambda_) * self.diffusion.q_sample(x1, t) + lambda_ * self.diffusion.q_sample(x2, t)
@@ -126,30 +123,27 @@ class Sampler:
         alpha_bar = gather(self.alpha_bar, t)
         return (xt - (1 - alpha_bar) ** .5 * eps) / (alpha_bar ** .5)
 
-def main():
+def main(animate=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     diffusion_model = torch.load("ddpm_model.pth", map_location=device)
-    sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device)
+    sampler = Sampler(diffusion_model, image_channels=1, image_size=32, device=device) # MNIST data has 1 channel
 
     with torch.no_grad():
         if sample_type == "image":
-            pass
-        elif sample_type == "animation":
-            pass 
+            if animate:
+                sampler.sample_animation(n_frames=2)
+            else:
+                sampler.sample(n_samples=2)
         elif sample_type == "interpolate":
-            pass 
-            
-        # sampler.sample_animation()
-
-        if True:
             dataset = MNISTDataset(image_size=32)
-            data_loader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True, pin_memory=True)
+            data_loader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, pin_memory=True)
             data = next(iter(data_loader)).to(device)
-
-            print(data[0].shape, data[1].shape)
-
-            return data, sampler, device
-            # sampler.interpolate_animate(data[0], data[1])
-
+            
+            if animate:
+                sampler.interpolate_animate(data[0], data[1])
+            else:
+                interpolated_image = sampler.interpolate(data[0], data[1])
+                sampler.show_image(interpolated_image, "interpolated image")
+            
 if __name__ == "__main__":
     main()
