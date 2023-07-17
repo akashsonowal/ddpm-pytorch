@@ -41,19 +41,6 @@ class Sampler:
         plt.title(title)
         plt.show()
     
-    def p_x0(self, xt: torch.Tensor, t: torch.Tensor, eps: torch.Tensor):
-        alpha_bar = gather(self.alpha_bar, t)
-        return (xt - (1 - alpha_bar) ** .5 * eps) / (alpha_bar ** .5)
-    
-    def p_sample(self, xt: torch.Tensor, t: torch.Tensor, eps_theta: torch.Tensor):
-        alpha_bar = gather(self.alpha_bar, t)
-        alpha = gather(self.alpha, t)
-        eps_coef = (1 - alpha) / (1 - alpha_bar) ** .5
-        mean = 1 / (alpha ** .5) * (xt - eps_coef * eps_theta)
-        var = gather(self.sigma2, t)
-        eps = torch.randn(xt.shape, device=xt.device)
-        return mean + (var ** .5) * eps
-    
     def make_video(self, frames, path="video.mp4"):
         import imageio
         writer = imageio.get_writer(path, fps=len(frames) // 20)
@@ -78,16 +65,15 @@ class Sampler:
         for t_inv in range(self.n_steps):
             t_ = self.n_steps - t_inv - 1
             t = xt.new_full((n_samples,), t_, dtype=torch.long)
-            eps_theta = self.eps_model(xt, t)
 
             if t_ % interval == 0:
-                x0 = self.p_x0(xt, t, eps_theta)
+                xt = self.diffusion.p_sample(xt, t)
                 frames.append(x0[0])
 
                 if not create_video:
-                    self.show_image(x0[0], f"{t_}")
-            
-            xt = self.p_sample(xt, t, eps_theta)
+                    self.show_image(xt[0], f"{t_}")
+                continue
+            xt = self.diffusion.p_sample(xt, t)
 
         if create_video:
             self.make_video(frames)
