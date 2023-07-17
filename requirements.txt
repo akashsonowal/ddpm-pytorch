@@ -3,4 +3,3 @@ torch
 torchvision
 matplotlib
 imageio[ffmpeg]
-
