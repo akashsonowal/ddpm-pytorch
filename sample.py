@@ -72,8 +72,10 @@ class Sampler:
 
                 if not create_video:
                     self.show_image(xt[0], f"{t_}")
-                continue
-            xt = self.diffusion.p_sample(xt, t)
+                continue 
+
+            if t_ != 0:
+                xt = self.diffusion.p_sample(xt, t)
 
         if create_video:
             self.make_video(frames)
