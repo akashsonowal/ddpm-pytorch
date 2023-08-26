@@ -37,7 +37,7 @@ class DenoiseDiffusion:
         mean, var = self.q_xt_x0(x0, t)
         return mean + (var**0.5) * eps
 
-    def p_sample(self, xt: torch.Tensor, t: torch.Tensor):  # reverse diffusion
+    def p_sample(self, xt: torch.Tensor, t: torch.Tensor):  # reverse diffusion (used for inference)
         eps_theta = self.eps_model(
             xt, t
         )  # model predicts at the time stamps present in the batch
