@@ -7,7 +7,7 @@ from torch import nn
 
 
 def gather(consts: torch.Tensor, t: torch.Tensor):
-    c = consts.gather(-1, t)  # rearranges the elements in the tensor (gather only picks the column indices mentioned in t for a row)
+    c = consts.gather(-1, t)  # gather picks the indices mentioned in t along the dim=-1)
     return c.reshape(-1, 1, 1, 1)  # brings all elements in dim = 0
 
 
